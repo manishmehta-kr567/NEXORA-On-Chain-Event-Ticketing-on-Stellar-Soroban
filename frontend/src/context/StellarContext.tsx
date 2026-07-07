@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { isConnected, setAllowed, getAddress } from '@stellar/freighter-api';
+import { isConnected, setAllowed, getAddress, signTransaction } from '@stellar/freighter-api';
+import { TransactionBuilder, Networks, Operation, Asset, Horizon } from '@stellar/stellar-sdk';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface WalletState {
@@ -100,6 +101,42 @@ const CONTRACTS = {
 
 const HORIZON_URL = 'https://horizon-testnet.stellar.org';
 const SOROBAN_RPC = 'https://soroban-testnet.stellar.org';
+const server = new Horizon.Server(HORIZON_URL);
+
+async function executePayment(sourceAddress: string, amountXlm: string, destination: string): Promise<string> {
+  const account = await server.loadAccount(sourceAddress);
+  
+  let op;
+  if (parseFloat(amountXlm) > 0) {
+    op = Operation.payment({
+      destination,
+      asset: Asset.native(),
+      amount: amountXlm,
+    });
+  } else {
+    op = Operation.manageData({
+      name: 'mint_ticket',
+      value: 'true',
+    });
+  }
+
+  const tx = new TransactionBuilder(account, {
+    fee: '10000',
+    networkPassphrase: Networks.TESTNET,
+  })
+    .addOperation(op)
+    .setTimeout(60)
+    .build();
+
+  const signed = await signTransaction(tx.toXDR(), { networkPassphrase: Networks.TESTNET });
+  if (signed.error || !signed.signedTxXdr) {
+    throw new Error(signed.error || 'User rejected the signature or signing failed');
+  }
+
+  const txToSubmit = TransactionBuilder.fromXDR(signed.signedTxXdr, Networks.TESTNET);
+  const response = await server.submitTransaction(txToSubmit as any);
+  return response.hash;
+}
 
 // ─── Seed data ────────────────────────────────────────────────────────────────
 const SEED_EVENTS: Event[] = [
@@ -212,20 +249,35 @@ export function StellarProvider({ children }: { children: ReactNode }) {
     if (!evt) return;
     if (evt.sold >= evt.capacity) { addToast('Event is sold out', 'error'); return; }
 
-    addToast('Simulating transaction...', 'info');
-    await new Promise(r => setTimeout(r, 1200));
+    addToast('Awaiting wallet signature...', 'info');
+    
+    let txHash: string;
+    if (wallet.isSandbox) {
+      await new Promise(r => setTimeout(r, 1200));
+      txHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+    } else {
+      try {
+        txHash = await executePayment(wallet.address, evt.price, SANDBOX_ADDRESS); // Sending funds to sandbox address as treasury
+      } catch (err: any) {
+        addToast(err.message, 'error');
+        return;
+      }
+    }
 
     const ticketNum = (evt.sold + 1).toString().padStart(4, '0');
     const ticketId = `#TKT-${ticketNum}`;
 
-    // Deduct price from wallet balance
-    const priceNum = parseFloat(evt.price || '0');
-    setWallet(prev => ({
-      ...prev,
-      balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
-    }));
-
-    const txHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+    // Deduct price from wallet balance visually in UI (already handled by actual transaction, but we update UI immediately)
+    if (!wallet.isSandbox) {
+      // Re-fetch balance to be exact
+      fetchBalance(wallet.address).then(bal => setWallet(prev => ({ ...prev, balance: bal })));
+    } else {
+      const priceNum = parseFloat(evt.price || '0');
+      setWallet(prev => ({
+        ...prev,
+        balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
+      }));
+    }
 
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, sold: e.sold + 1 } : e));
     setTickets(prev => [...prev, { id: ticketId, eventId, eventName: evt.name, owner: wallet.address, checkedIn: false, purchasedAt: Date.now(), price: evt.price }]);
@@ -282,20 +334,34 @@ export function StellarProvider({ children }: { children: ReactNode }) {
     if (!wallet.connected) { addToast('Connect a wallet first', 'error'); return; }
     const listing = listings.find(l => l.ticketId === ticketId);
     if (!listing) return;
-    addToast('Processing purchase with royalty split...', 'info');
-    await new Promise(r => setTimeout(r, 1200));
+    addToast('Awaiting wallet signature...', 'info');
+
+    let txHash: string;
+    if (wallet.isSandbox) {
+      await new Promise(r => setTimeout(r, 1200));
+      txHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+    } else {
+      try {
+        txHash = await executePayment(wallet.address, listing.price, listing.seller);
+      } catch (err: any) {
+        addToast(err.message, 'error');
+        return;
+      }
+    }
 
     setListings(prev => prev.filter(l => l.ticketId !== ticketId));
     
     // Deduct price from wallet balance
-    const priceNum = parseFloat(listing.price || '0');
-    setWallet(prev => ({
-      ...prev,
-      balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
-    }));
+    if (!wallet.isSandbox) {
+      fetchBalance(wallet.address).then(bal => setWallet(prev => ({ ...prev, balance: bal })));
+    } else {
+      const priceNum = parseFloat(listing.price || '0');
+      setWallet(prev => ({
+        ...prev,
+        balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
+      }));
+    }
 
-    const txHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
-    
     setTickets(prev => [...prev, { id: ticketId, eventId: listing.eventId, eventName: listing.eventName, owner: wallet.address, checkedIn: false, purchasedAt: Date.now(), price: listing.price }]);
     pushFeed({ type: 'sale', eventName: listing.eventName, ticketId, amount: `${listing.price} XLM`, txHash });
     
