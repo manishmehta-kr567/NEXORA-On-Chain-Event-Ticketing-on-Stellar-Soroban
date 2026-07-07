@@ -30,10 +30,11 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
       - name: Install Stellar CLI
-        run: |
-          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
-          sudo mv stellar-cli-22.0.0-x86_64-unknown-linux-gnu/stellar /usr/local/bin/
+        run: cargo binstall -y stellar-cli@22.0.0
 
       - name: Build WASM contracts
         run: |
@@ -178,10 +179,11 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+
       - name: Install Stellar CLI
-        run: |
-          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
-          sudo mv stellar-cli-22.0.0-x86_64-unknown-linux-gnu/stellar /usr/local/bin/
+        run: cargo binstall -y stellar-cli@22.0.0
 
       - name: Configure testnet identity
         run: |
