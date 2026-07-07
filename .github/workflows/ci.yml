@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Stellar CLI
         run: |
-          cargo install stellar-cli --version 22.0.0 --locked
+          cargo install stellar-cli --version 22.0.0 --features opt --locked
 
       - name: Build WASM contracts
         run: |
@@ -176,7 +176,7 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
 
       - name: Install Stellar CLI
-        run: cargo install stellar-cli --version 22.0.0 --locked
+        run: cargo install stellar-cli --version 22.0.0 --features opt --locked
 
       - name: Configure testnet identity
         run: |
