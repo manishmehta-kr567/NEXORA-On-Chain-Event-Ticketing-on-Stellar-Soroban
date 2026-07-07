@@ -218,6 +218,13 @@ export function StellarProvider({ children }: { children: ReactNode }) {
     const ticketNum = (evt.sold + 1).toString().padStart(4, '0');
     const ticketId = `#TKT-${ticketNum}`;
 
+    // Deduct price from wallet balance
+    const priceNum = parseFloat(evt.price || '0');
+    setWallet(prev => ({
+      ...prev,
+      balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
+    }));
+
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, sold: e.sold + 1 } : e));
     setTickets(prev => [...prev, { id: ticketId, eventId, eventName: evt.name, owner: wallet.address, checkedIn: false, purchasedAt: Date.now(), price: evt.price }]);
     pushFeed({ type: 'mint', eventName: evt.name, ticketId, txHash: Math.random().toString(16).slice(2, 18) });
@@ -268,6 +275,14 @@ export function StellarProvider({ children }: { children: ReactNode }) {
     await new Promise(r => setTimeout(r, 1200));
 
     setListings(prev => prev.filter(l => l.ticketId !== ticketId));
+    
+    // Deduct price from wallet balance
+    const priceNum = parseFloat(listing.price || '0');
+    setWallet(prev => ({
+      ...prev,
+      balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
+    }));
+
     setTickets(prev => [...prev, { id: ticketId, eventId: listing.eventId, eventName: listing.eventName, owner: wallet.address, checkedIn: false, purchasedAt: Date.now(), price: listing.price }]);
     pushFeed({ type: 'sale', eventName: listing.eventName, ticketId, amount: `${listing.price} XLM` });
     addToast(`Ticket purchased! Royalties auto-split to creator.`, 'success');
