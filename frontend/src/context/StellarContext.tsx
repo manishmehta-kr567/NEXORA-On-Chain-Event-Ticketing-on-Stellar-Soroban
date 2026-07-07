@@ -87,7 +87,7 @@ export type ToastType = 'success' | 'error' | 'info';
 
 export interface Toast {
   id: string;
-  message: string;
+  message: ReactNode;
   type: ToastType;
 }
 
@@ -136,10 +136,10 @@ export function StellarProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const feedTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const addToast = useCallback((message: string, type: ToastType) => {
+  const addToast = useCallback((message: ReactNode, type: ToastType) => {
     const id = Math.random().toString(36).slice(2);
     setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 6000); // 6s to allow clicking link
   }, []);
 
   const pushFeed = useCallback((entry: Omit<StellarEvent, 'id' | 'timestamp'>) => {
@@ -225,10 +225,21 @@ export function StellarProvider({ children }: { children: ReactNode }) {
       balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
     }));
 
+    const txHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, sold: e.sold + 1 } : e));
     setTickets(prev => [...prev, { id: ticketId, eventId, eventName: evt.name, owner: wallet.address, checkedIn: false, purchasedAt: Date.now(), price: evt.price }]);
-    pushFeed({ type: 'mint', eventName: evt.name, ticketId, txHash: Math.random().toString(16).slice(2, 18) });
-    addToast(`Ticket ${ticketId} purchased for ${evt.price} XLM!`, 'success');
+    pushFeed({ type: 'mint', eventName: evt.name, ticketId, txHash });
+    
+    addToast(
+      <span>
+        Ticket {ticketId} purchased!{' '}
+        <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'underline', color: 'inherit' }}>
+          View on Explorer
+        </a>
+      </span>, 
+      'success'
+    );
   }, [wallet, events, addToast, pushFeed]);
 
   const createEvent = useCallback(async (data: CreateEventData) => {
@@ -283,9 +294,20 @@ export function StellarProvider({ children }: { children: ReactNode }) {
       balance: (parseFloat(prev.balance) - priceNum).toFixed(2)
     }));
 
+    const txHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+    
     setTickets(prev => [...prev, { id: ticketId, eventId: listing.eventId, eventName: listing.eventName, owner: wallet.address, checkedIn: false, purchasedAt: Date.now(), price: listing.price }]);
-    pushFeed({ type: 'sale', eventName: listing.eventName, ticketId, amount: `${listing.price} XLM` });
-    addToast(`Ticket purchased! Royalties auto-split to creator.`, 'success');
+    pushFeed({ type: 'sale', eventName: listing.eventName, ticketId, amount: `${listing.price} XLM`, txHash });
+    
+    addToast(
+      <span>
+        Ticket purchased! Royalties split.{' '}
+        <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'underline', color: 'inherit' }}>
+          View on Explorer
+        </a>
+      </span>, 
+      'success'
+    );
   }, [listings, wallet, addToast, pushFeed]);
 
   const cancelListing = useCallback(async (ticketId: string) => {
