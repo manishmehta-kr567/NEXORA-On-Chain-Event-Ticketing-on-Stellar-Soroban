@@ -66,8 +66,8 @@ impl EventTicketContract {
     ) -> u64 {
         creator.require_auth();
         assert!(capacity > 0,      "capacity must be > 0");
-        assert!(royalty_bps <= 2500, "royalty must be ≤ 25%");
-        assert!(price >= 0,         "price must be ≥ 0");
+        assert!(royalty_bps <= 2500, "royalty must be <= 25%");
+        assert!(price >= 0,         "price must be >= 0");
 
         let id: u64 = env.storage().instance().get(&EVT_CNT_KEY).unwrap_or(0) + 1;
         env.storage().instance().set(&EVT_CNT_KEY, &id);

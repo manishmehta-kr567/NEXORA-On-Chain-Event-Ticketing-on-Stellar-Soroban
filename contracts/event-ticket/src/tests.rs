@@ -63,7 +63,7 @@ fn test_event_id_increments() {
 
 // ─── Test 4: Royalty bps cap enforced ────────────────────────────────────────
 #[test]
-#[should_panic(expected = "royalty must be ≤ 25%")]
+#[should_panic(expected = "royalty must be <= 25%")]
 fn test_royalty_cap() {
     let (env, client) = setup();
     let creator = Address::generate(&env);
