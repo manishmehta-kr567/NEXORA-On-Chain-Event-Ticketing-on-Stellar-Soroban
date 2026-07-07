@@ -15,8 +15,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: 1.77.2
           targets: wasm32-unknown-unknown
 
       - name: Cache cargo registry and binaries
@@ -37,11 +38,8 @@ jobs:
 
       - name: Build WASM contracts
         run: |
-          cargo clean
           cargo build --target wasm32-unknown-unknown --release -p event-ticket
           cargo build --target wasm32-unknown-unknown --release -p marketplace
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory,-mutable-globals,-reference-types,-sign-ext"
 
       - name: Run contract unit tests
         run: cargo test --workspace -- --nocapture
@@ -135,8 +133,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust + Stellar CLI
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: 1.77.2
           targets: wasm32-unknown-unknown
 
       - name: Cache cargo registry and binaries
@@ -162,31 +161,23 @@ jobs:
 
       - name: Build & deploy event-ticket contract
         run: |
-          cargo clean
-          cargo build --target wasm32-unknown-unknown --release -p event-ticket
-          stellar contract optimize --wasm target/wasm32-unknown-unknown/release/event_ticket.wasm
+          stellar contract build --package event-ticket
           EVENT_CONTRACT_ID=$(stellar contract deploy \
-            --wasm target/wasm32-unknown-unknown/release/event_ticket.optimized.wasm \
+            --wasm target/wasm32-unknown-unknown/release/event_ticket.wasm \
             --source deployer \
             --network testnet)
           echo "EVENT_CONTRACT_ID=$EVENT_CONTRACT_ID" >> $GITHUB_ENV
           echo "Deployed EventTicket: $EVENT_CONTRACT_ID"
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory,-mutable-globals,-reference-types,-sign-ext"
 
       - name: Build & deploy marketplace contract
         run: |
-          cargo clean
-          cargo build --target wasm32-unknown-unknown --release -p marketplace
-          stellar contract optimize --wasm target/wasm32-unknown-unknown/release/marketplace.wasm
+          stellar contract build --package marketplace
           MARKETPLACE_ID=$(stellar contract deploy \
-            --wasm target/wasm32-unknown-unknown/release/marketplace.optimized.wasm \
+            --wasm target/wasm32-unknown-unknown/release/marketplace.wasm \
             --source deployer \
             --network testnet)
           echo "MARKETPLACE_ID=$MARKETPLACE_ID" >> $GITHUB_ENV
           echo "Deployed Marketplace: $MARKETPLACE_ID"
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory,-mutable-globals,-reference-types,-sign-ext"
 
       - name: Initialize contracts
         run: |
