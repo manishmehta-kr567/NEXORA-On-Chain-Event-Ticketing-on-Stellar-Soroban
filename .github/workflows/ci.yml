@@ -34,14 +34,14 @@ jobs:
         run: |
           cargo install stellar-cli --version 22.0.0 --locked
 
-      - name: Run contract unit tests
-        run: cargo test --workspace -- --nocapture
-        working-directory: ./
-
       - name: Build WASM contracts
         run: |
           cargo build --target wasm32-unknown-unknown --release -p event-ticket
           cargo build --target wasm32-unknown-unknown --release -p marketplace
+
+      - name: Run contract unit tests
+        run: cargo test --workspace -- --nocapture
+        working-directory: ./
 
       - name: Optimize WASM with stellar optimize
         run: |

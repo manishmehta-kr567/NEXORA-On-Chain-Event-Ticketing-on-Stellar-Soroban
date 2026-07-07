@@ -153,10 +153,11 @@ impl EventTicketContract {
         assert!(&tkt.owner == &from, "not ticket owner");
         assert!(!tkt.is_checked_in,  "checked-in tickets cannot be transferred");
 
-        // Update owner index
         let mut from_tickets: Vec<u64> = env.storage().persistent()
             .get(&owner_tickets_key(&from)).unwrap_or(vec![&env]);
-        from_tickets.retain(|id| id != ticket_id);
+        if let Some(idx) = from_tickets.first_index_of(ticket_id) {
+            from_tickets.remove(idx);
+        }
         env.storage().persistent().set(&owner_tickets_key(&from), &from_tickets);
 
         let mut to_tickets: Vec<u64> = env.storage().persistent()
