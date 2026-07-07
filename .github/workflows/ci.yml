@@ -37,6 +37,7 @@ jobs:
 
       - name: Build WASM contracts
         run: |
+          cargo clean
           cargo build --target wasm32-unknown-unknown --release -p event-ticket
           cargo build --target wasm32-unknown-unknown --release -p marketplace
 
@@ -159,6 +160,7 @@ jobs:
 
       - name: Build & deploy event-ticket contract
         run: |
+          cargo clean -p event-ticket
           cargo build --target wasm32-unknown-unknown --release -p event-ticket
           EVENT_CONTRACT_ID=$(stellar contract deploy \
             --wasm target/wasm32-unknown-unknown/release/event_ticket.wasm \
@@ -169,6 +171,7 @@ jobs:
 
       - name: Build & deploy marketplace contract
         run: |
+          cargo clean -p marketplace
           cargo build --target wasm32-unknown-unknown --release -p marketplace
           MARKETPLACE_ID=$(stellar contract deploy \
             --wasm target/wasm32-unknown-unknown/release/marketplace.wasm \
