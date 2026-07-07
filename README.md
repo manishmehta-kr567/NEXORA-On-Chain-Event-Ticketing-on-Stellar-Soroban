@@ -3,7 +3,7 @@
 NEXORA is a fully decentralized, production-ready event ticketing platform built on Stellar (Soroban). Tickets are NFTs minted on-chain, ownership is verifiable, and secondary market royalties are enforced atomically by smart contracts — no middlemen, no ticket scalping abuse.
 
 ## 🔗 Live Demo & Video Pitch
-- **Live Platform**: [INSERT_VERCEL_LINK_HERE] *(Please provide the live Vercel URL)*
+- **Live Platform**: [https://nexora-on-chain-event-ticketing-on-omega.vercel.app/](https://nexora-on-chain-event-ticketing-on-omega.vercel.app/)
 - **Demo Video**: [Watch the Demo on Google Drive](https://drive.google.com/file/d/1f7ZckkHdnPu9UOyyB_gaWt4xQarqbLTj/view?usp=sharing)
 
 ## 🌟 Key Features
