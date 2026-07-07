@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
-import { isConnected, setAllowed, getPublicKey } from '@stellar/freighter-api';
+import { isConnected, setAllowed, getAddress } from '@stellar/freighter-api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface WalletState {
@@ -182,7 +182,11 @@ export function StellarProvider({ children }: { children: ReactNode }) {
         throw new Error('Freighter not installed or not available in this browser');
       }
       await setAllowed();
-      const address = await getPublicKey();
+      const res = await getAddress();
+      if (res.error || !res.address) {
+        throw new Error(res.error || 'Could not get wallet address');
+      }
+      const address = res.address;
       const balance = await fetchBalance(address);
       setWallet({ connected: true, address, balance, isSandbox: false });
       addToast('Freighter wallet connected!', 'success');
