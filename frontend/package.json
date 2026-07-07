@@ -10,20 +10,21 @@
     "lint": "eslint src --ext ts,tsx"
   },
   "dependencies": {
+    "@stellar/freighter-api": "^6.0.1",
     "@stellar/stellar-sdk": "^15.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "jsdom": "^24.1.1",
     "typescript": "^5.5.3",
     "vite": "^5.4.2",
-    "vitest": "^2.0.5",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/jest-dom": "^6.4.6",
-    "jsdom": "^24.1.1",
-    "eslint": "^9.9.0"
+    "vitest": "^2.0.5"
   }
 }

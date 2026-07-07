@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import { isConnected, setAllowed, getPublicKey } from '@stellar/freighter-api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface WalletState {
@@ -177,10 +178,11 @@ export function StellarProvider({ children }: { children: ReactNode }) {
 
   const connectFreighter = useCallback(async () => {
     try {
-      const freighter = (window as any).freighter;
-      if (!freighter) throw new Error('Freighter not installed');
-      await freighter.setAllowed();
-      const address = await freighter.getPublicKey();
+      if (!(await isConnected())) {
+        throw new Error('Freighter not installed or not available in this browser');
+      }
+      await setAllowed();
+      const address = await getPublicKey();
       const balance = await fetchBalance(address);
       setWallet({ connected: true, address, balance, isSandbox: false });
       addToast('Freighter wallet connected!', 'success');
