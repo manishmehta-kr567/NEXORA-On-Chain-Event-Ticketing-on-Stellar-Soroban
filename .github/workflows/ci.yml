@@ -39,8 +39,6 @@ jobs:
         run: |
           cargo build --target wasm32-unknown-unknown --release -p event-ticket
           cargo build --target wasm32-unknown-unknown --release -p marketplace
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory -C target-feature=-mutable-globals -C target-feature=-reference-types"
 
       - name: Run contract unit tests
         run: cargo test --workspace -- --nocapture
@@ -168,8 +166,6 @@ jobs:
             --network testnet)
           echo "EVENT_CONTRACT_ID=$EVENT_CONTRACT_ID" >> $GITHUB_ENV
           echo "Deployed EventTicket: $EVENT_CONTRACT_ID"
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory -C target-feature=-mutable-globals -C target-feature=-reference-types"
 
       - name: Build & deploy marketplace contract
         run: |
@@ -180,8 +176,6 @@ jobs:
             --network testnet)
           echo "MARKETPLACE_ID=$MARKETPLACE_ID" >> $GITHUB_ENV
           echo "Deployed Marketplace: $MARKETPLACE_ID"
-        env:
-          RUSTFLAGS: "-C target-feature=-bulk-memory -C target-feature=-mutable-globals -C target-feature=-reference-types"
 
       - name: Initialize contracts
         run: |

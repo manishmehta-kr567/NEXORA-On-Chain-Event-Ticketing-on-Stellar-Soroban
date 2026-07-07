@@ -1,2 +1,2 @@
 [target.wasm32-unknown-unknown]
-rustflags = ["-C", "target-feature=-bulk-memory", "-C", "target-feature=-mutable-globals"]
+rustflags = ["-C", "target-feature=-bulk-memory,-mutable-globals,-reference-types,-sign-ext"]
