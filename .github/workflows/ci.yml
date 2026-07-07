@@ -162,8 +162,9 @@ jobs:
         run: |
           cargo clean -p event-ticket
           cargo build --target wasm32-unknown-unknown --release -p event-ticket
+          stellar contract optimize --wasm target/wasm32-unknown-unknown/release/event_ticket.wasm
           EVENT_CONTRACT_ID=$(stellar contract deploy \
-            --wasm target/wasm32-unknown-unknown/release/event_ticket.wasm \
+            --wasm target/wasm32-unknown-unknown/release/event_ticket.optimized.wasm \
             --source deployer \
             --network testnet)
           echo "EVENT_CONTRACT_ID=$EVENT_CONTRACT_ID" >> $GITHUB_ENV
@@ -173,8 +174,9 @@ jobs:
         run: |
           cargo clean -p marketplace
           cargo build --target wasm32-unknown-unknown --release -p marketplace
+          stellar contract optimize --wasm target/wasm32-unknown-unknown/release/marketplace.wasm
           MARKETPLACE_ID=$(stellar contract deploy \
-            --wasm target/wasm32-unknown-unknown/release/marketplace.wasm \
+            --wasm target/wasm32-unknown-unknown/release/marketplace.optimized.wasm \
             --source deployer \
             --network testnet)
           echo "MARKETPLACE_ID=$MARKETPLACE_ID" >> $GITHUB_ENV
