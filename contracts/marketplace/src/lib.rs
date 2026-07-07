@@ -8,7 +8,7 @@ use soroban_sdk::{
 // ─── Inter-contract client for EventTicket ────────────────────────────────────
 mod event_ticket {
     use soroban_sdk::{contractimport, Env};
-    contractimport!(file = "../../event-ticket/target/wasm32-unknown-unknown/release/event_ticket.wasm");
+    contractimport!(file = "../../target/wasm32-unknown-unknown/release/event_ticket.wasm");
 }
 
 // ─── Storage Keys ─────────────────────────────────────────────────────────────
