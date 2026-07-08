@@ -15,9 +15,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@master
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: 1.77.2
           targets: wasm32-unknown-unknown
 
       - name: Cache cargo registry and binaries
@@ -33,13 +32,14 @@ jobs:
 
       - name: Install Stellar CLI
         run: |
-          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v27.0.0/stellar-cli-27.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
           sudo mv stellar /usr/local/bin/
 
       - name: Build WASM contracts
         run: |
-          cargo build --target wasm32-unknown-unknown --release -p event-ticket
-          cargo build --target wasm32-unknown-unknown --release -p marketplace
+          stellar contract build --package event-ticket
+          stellar contract build --package marketplace --nocapture
+        working-directory: ./
 
       - name: Run contract unit tests
         run: cargo test --workspace -- --nocapture
@@ -133,9 +133,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust + Stellar CLI
-        uses: dtolnay/rust-toolchain@master
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: 1.77.2
           targets: wasm32-unknown-unknown
 
       - name: Cache cargo registry and binaries
@@ -151,7 +150,7 @@ jobs:
 
       - name: Install Stellar CLI
         run: |
-          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v22.0.0/stellar-cli-22.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          curl -sSL https://github.com/stellar/stellar-cli/releases/download/v27.0.0/stellar-cli-27.0.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
           sudo mv stellar /usr/local/bin/
 
       - name: Configure testnet identity
