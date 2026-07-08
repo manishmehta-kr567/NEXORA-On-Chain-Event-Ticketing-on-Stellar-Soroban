@@ -22,23 +22,19 @@ As per the submission checklist, here are the required screenshots demonstrating
 
 ### 1. Mobile Responsive UI
 The platform is fully responsive and optimized for mobile devices.
-<img src="screenshots/mobile_UI_responsive.png" width="100%" alt="Mobile Responsive UI" />
-*(Please add your screenshot to the `screenshots/` folder with this name)*
+<img src="screenshots/mobile_ui.png" width="100%" alt="Mobile Responsive UI" />
 
 ### 2. CI/CD Pipeline Running
 Automated GitHub Actions workflow running tests, building WASM, and deploying the frontend.
-<img src="screenshots/CI_CD_pipline.png" width="100%" alt="CI/CD Pipeline" />
-*(Please add your screenshot to the `screenshots/` folder with this name)*
+<img src="screenshots/ci_cd_pipeline.png" width="100%" alt="CI/CD Pipeline" />
 
 ### 3. Test Output (Passing Tests)
 Comprehensive Rust integration tests validating the smart contract logic.
 <img src="screenshots/test_output.png" width="100%" alt="Cargo Test Output" />
-*(Please add your screenshot to the `screenshots/` folder with this name)*
 
 ### 4. Stellar Explorer Verification
 Real transactions successfully submitted to the Stellar Testnet and verifiable on Stellar Expert.
 <img src="screenshots/stellar_explorer.png" width="100%" alt="Stellar Explorer Transaction" />
-*(Please add your screenshot to the `screenshots/` folder with this name)*
 
 ---
 
@@ -95,8 +91,13 @@ npm run dev          # http://localhost:5173
 
 | Contract | Testnet Address |
 |---|---|
-| EventTicket | `CAIRVZ6DNVMH543WDVD5FPYF5UMOYSQSA4C5D5R5GVF5WJG54H7EVRMC` |
-| Marketplace | `CB37Z3TFONEVJV5LT5FSE52AOAUPL6XSNI33527MUZAPJSYVZW42CKDE` |
+| EventTicket | `CD5D5OKVOUMLZS4HWRPH7T7VNSMWE5CKSO7S6AII3UFJZGFEUMOQEYFH` |
+| Marketplace | `CDFDYFNVT2IWLHUEFCF4GDFR7MD3Y6RKJZNOI7VOSHLMHTZXEMLX4PVI` |
+
+### Transaction Hashes (Contract Interaction)
+As part of the deployment and initialization, the contracts were interacted with on the Stellar Testnet. You can verify the transactions here:
+- **EventTicket Initialization**: [8e77ddcd8ee237db0c415c3ced621eb392724b6b6b33b70245050bf3872fcbca](https://stellar.expert/explorer/testnet/tx/8e77ddcd8ee237db0c415c3ced621eb392724b6b6b33b70245050bf3872fcbca)
+- **Marketplace Initialization**: [2429aa6893f26c526c0c9354382eafbfe04b9f8f7510bb441712b7a001f1b288](https://stellar.expert/explorer/testnet/tx/2429aa6893f26c526c0c9354382eafbfe04b9f8f7510bb441712b7a001f1b288)
 
 ## 📄 License
 MIT — built for the Stellar Hackathon.
