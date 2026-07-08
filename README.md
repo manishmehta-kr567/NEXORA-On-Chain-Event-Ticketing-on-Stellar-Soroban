@@ -37,6 +37,17 @@ Real transactions successfully submitted to the Stellar Testnet and verifiable o
 <img src="screenshots/stellar_explorer.png" width="100%" alt="Stellar Explorer Transaction" />
 
 ---
+## 🔗 Deployed Contracts
+
+| Contract | Testnet Address |
+|---|---|
+| EventTicket | `CD5D5OKVOUMLZS4HWRPH7T7VNSMWE5CKSO7S6AII3UFJZGFEUMOQEYFH` |
+| Marketplace | `CDFDYFNVT2IWLHUEFCF4GDFR7MD3Y6RKJZNOI7VOSHLMHTZXEMLX4PVI` |
+
+### Transaction Hashes (Contract Interaction)
+As part of the deployment and initialization, the contracts were interacted with on the Stellar Testnet. You can verify the transactions here:
+- **EventTicket Initialization**: [8e77ddcd8ee237db0c415c3ced621eb392724b6b6b33b70245050bf3872fcbca](https://stellar.expert/explorer/testnet/tx/8e77ddcd8ee237db0c415c3ced621eb392724b6b6b33b70245050bf3872fcbca)
+- **Marketplace Initialization**: [2429aa6893f26c526c0c9354382eafbfe04b9f8f7510bb441712b7a001f1b288](https://stellar.expert/explorer/testnet/tx/2429aa6893f26c526c0c9354382eafbfe04b9f8f7510bb441712b7a001f1b288)
 
 ## 🏗️ Architecture
 
@@ -86,18 +97,3 @@ cd frontend
 npm install
 npm run dev          # http://localhost:5173
 ```
-
-## 🔗 Deployed Contracts
-
-| Contract | Testnet Address |
-|---|---|
-| EventTicket | `CD5D5OKVOUMLZS4HWRPH7T7VNSMWE5CKSO7S6AII3UFJZGFEUMOQEYFH` |
-| Marketplace | `CDFDYFNVT2IWLHUEFCF4GDFR7MD3Y6RKJZNOI7VOSHLMHTZXEMLX4PVI` |
-
-### Transaction Hashes (Contract Interaction)
-As part of the deployment and initialization, the contracts were interacted with on the Stellar Testnet. You can verify the transactions here:
-- **EventTicket Initialization**: [8e77ddcd8ee237db0c415c3ced621eb392724b6b6b33b70245050bf3872fcbca](https://stellar.expert/explorer/testnet/tx/8e77ddcd8ee237db0c415c3ced621eb392724b6b6b33b70245050bf3872fcbca)
-- **Marketplace Initialization**: [2429aa6893f26c526c0c9354382eafbfe04b9f8f7510bb441712b7a001f1b288](https://stellar.expert/explorer/testnet/tx/2429aa6893f26c526c0c9354382eafbfe04b9f8f7510bb441712b7a001f1b288)
-
-## 📄 License
-MIT — built for the Stellar Hackathon.
