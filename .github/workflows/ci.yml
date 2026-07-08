@@ -17,7 +17,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
+          targets: wasm32v1-none
 
       - name: Cache cargo registry and binaries
         uses: actions/cache@v4
@@ -135,7 +135,7 @@ jobs:
       - name: Install Rust + Stellar CLI
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
+          targets: wasm32v1-none
 
       - name: Cache cargo registry and binaries
         uses: actions/cache@v4
@@ -162,7 +162,7 @@ jobs:
         run: |
           stellar contract build --package event-ticket
           EVENT_CONTRACT_ID=$(stellar contract deploy \
-            --wasm target/wasm32-unknown-unknown/release/event_ticket.wasm \
+            --wasm target/wasm32v1-none/release/event_ticket.wasm \
             --source deployer \
             --network testnet)
           echo "EVENT_CONTRACT_ID=$EVENT_CONTRACT_ID" >> $GITHUB_ENV
@@ -172,7 +172,7 @@ jobs:
         run: |
           stellar contract build --package marketplace
           MARKETPLACE_ID=$(stellar contract deploy \
-            --wasm target/wasm32-unknown-unknown/release/marketplace.wasm \
+            --wasm target/wasm32v1-none/release/marketplace.wasm \
             --source deployer \
             --network testnet)
           echo "MARKETPLACE_ID=$MARKETPLACE_ID" >> $GITHUB_ENV
