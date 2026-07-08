@@ -38,7 +38,7 @@ jobs:
       - name: Build WASM contracts
         run: |
           stellar contract build --package event-ticket
-          stellar contract build --package marketplace --nocapture
+          stellar contract build --package marketplace
         working-directory: ./
 
       - name: Run contract unit tests
